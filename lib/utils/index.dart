@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:social_katchup/views/addPost.dart';
@@ -6,7 +5,6 @@ import 'package:social_katchup/views/messages.dart';
 import 'package:social_katchup/views/newsfeed.dart';
 import 'package:social_katchup/views/notification.dart';
 import 'package:social_katchup/views/profile.dart';
-import 'package:titled_navigation_bar/titled_navigation_bar.dart';
 
 class Index extends StatefulWidget {
   @override
@@ -22,6 +20,7 @@ class _IndexState extends State<Index> {
     Profile()
   ];
   int cindex = 0;
+
 //  final List<TitledNavigationBarItem> items = [
 //     TitledNavigationBarItem(title: Text(''),),
 //     TitledNavigationBarItem(title: Text('Search'), icon: Icons.search),
@@ -30,123 +29,68 @@ class _IndexState extends State<Index> {
 //     TitledNavigationBarItem(title: Text('Profile'), icon: Icons.person_outline),
 //   ];
 
+  List items = [
+    {'index': 0, 'img': 'assets/icons/home1.svg'},
+    {'index': 1, 'img': 'assets/icons/messages1.svg'},
+    {'index': 2, 'img': Icons.add},
+    {'index': 3, 'img': 'assets/icons/notification.svg'},
+    {'index': 4, 'img': 'assets/images/user.jpg'},
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length:5,
-          child: Scaffold(
-          body:_children[cindex],
-          
-          bottomNavigationBar:Padding(
-            padding: const EdgeInsets.only(
-              left: 5.0,
-              right: 5.0,
-            ),
-            child: Column(
-              mainAxisSize:MainAxisSize.min,
-              children: [
-                Container(
-                  child: BottomNavigationBar(
-                    
-                      backgroundColor: Colors.white,
-                      elevation: 0.0,
-                      
-                      type: BottomNavigationBarType.fixed,
-                      unselectedIconTheme: IconThemeData(color: Colors.grey),
-                      showUnselectedLabels: true,
-                      unselectedItemColor: Colors.grey,
-                      selectedItemColor: Theme.of(context).primaryColor,
-                      items: <BottomNavigationBarItem>[
-                        BottomNavigationBarItem(
-                            // backgroundColor: Theme.of(context).primaryColor,
-                            activeIcon: Container(
-                              height: 60,
-                              child: Column(
-                                mainAxisSize:MainAxisSize.min,
-                                mainAxisAlignment:MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(),
-                                  Container(
-                                    height: 3.0,
-                                    width: 50.0,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  
-                                  SizedBox(height: 13),
-                                  SvgPicture.asset('assets/icons/home1.svg',
-                                      height: 23.0),
-                                ],
-                              ),
-                            ),
-                            icon: SvgPicture.asset('assets/icons/home.svg',
-                                height: 23.0),
-                            title: Text('')),
-                        BottomNavigationBarItem(
-                            activeIcon: SvgPicture.asset('assets/icons/messages1.svg',
-                                height: 23.0),
-                            icon: SvgPicture.asset('assets/icons/messages.svg',
-                                height: 23.0),
-                            title: Text('')),
-                        BottomNavigationBarItem(
-                            activeIcon: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 10.0, right: 10.0, bottom: 10),
-                              child: Material(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                elevation: 7.0,
-                                child: CircleAvatar(
-                                    radius: 24,
-                                    backgroundColor: Theme.of(context).primaryColor,
-                                    child: Icon(Icons.add,
-                                        size: 40, color: Colors.white)),
-                              ),
-                            ),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 10.0, right: 10.0, bottom: 10),
-                              child: Material(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                elevation: 7.0,
-                                child: CircleAvatar(
-                                    radius: 24,
-                                    backgroundColor: Theme.of(context).primaryColor,
-                                    child: Icon(Icons.add,
-                                        size: 40, color: Colors.white)),
-                              ),
-                            ),
-                            title: Text('')),
-                        BottomNavigationBarItem(
-                            activeIcon: SvgPicture.asset(
-                                'assets/icons/notification1.svg',
-                                height: 23.0),
-                            icon: SvgPicture.asset('assets/icons/notification.svg',
-                                height: 23.0),
-                            title: Text('')),
-                        BottomNavigationBarItem(
-                            activeIcon: CircleAvatar(
-                                radius: 15,
-                                backgroundImage:
-                                    AssetImage('assets/images/user.jpg')),
-                            icon: CircleAvatar(
-                                radius: 15,
-                                backgroundImage:
-                                    AssetImage('assets/images/user.jpg')),
-                            title: Text('')),
-                      ],
-                      currentIndex: cindex,
-                      onTap: (int i) {
-                        setState(() {
-                          cindex = i;
-                        });
-                      }),
-                ),
-              ],
-            ))
-              ),
+    return Scaffold(
+      body: _children[cindex],
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [for (Map item in items) buildItem(item)],
+        ),
+      ),
+    );
+  }
+
+  buildItem(Map item) {
+    int index = item['index'];
+    if (index == 2) {
+      return FloatingActionButton(
+        mini: true,
+        child: Icon(item['img']),
+        onPressed: () {
+          cindex = index;
+        },
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 7.0,
+      );
+    } else if (index == 4) {
+      return CircleAvatar(radius: 15, backgroundImage: AssetImage(item['img']));
+    } else {
+      return buildBottomIcon(item);
+    }
+  }
+
+  buildBottomIcon(Map item) {
+    int index = item['index'];
+    Color primaryPink = Theme.of(context).primaryColor;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Visibility(
+          visible: index == cindex,
+          child: Container(height: 3.0, width: 50.0, color: primaryPink),
+        ),
+        IconButton(
+          icon: SvgPicture.asset(
+            item['img'],
+            height: 23.0,
+            color: index == cindex ? Colors.black : Colors.grey,
+          ),
+          onPressed: () {
+            cindex = index;
+            setState(() {});
+          },
+        ),
+      ],
     );
   }
 }
