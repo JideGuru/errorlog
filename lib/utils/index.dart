@@ -62,14 +62,12 @@ class _IndexState extends State<Index> {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 7.0,
       );
-    } else if (index == 4) {
-      return CircleAvatar(radius: 15, backgroundImage: AssetImage(item['img']));
     } else {
-      return buildBottomIcon(item);
+      return buildBottomIcon(item, profile: index == 4);
     }
   }
 
-  buildBottomIcon(Map item) {
+  buildBottomIcon(Map item, {bool profile = false}) {
     int index = item['index'];
     Color primaryPink = Theme.of(context).primaryColor;
     return Column(
@@ -80,10 +78,17 @@ class _IndexState extends State<Index> {
           child: Container(height: 3.0, width: 50.0, color: primaryPink),
         ),
         IconButton(
-          icon: SvgPicture.asset(
-            item['img'],
-            height: 23.0,
-            color: index == cindex ? Colors.black : Colors.grey,
+          icon: Visibility(
+            visible: !profile,
+            replacement: CircleAvatar(
+              radius: 15,
+              backgroundImage: AssetImage(item['img']),
+            ),
+            child: SvgPicture.asset(
+              item['img'],
+              height: 23.0,
+              color: index == cindex ? Colors.black : Colors.grey,
+            ),
           ),
           onPressed: () {
             cindex = index;
